@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>System Breach Protocol</title>
+    <style>
+        body {
+            margin: 0;
+            background: #000;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+        }
+        
+        .container {
+            padding: 20px;
+            height: 100vh;
+        }
+        
+        .terminal {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        #console-output {
+            white-space: pre-wrap;
+        }
+        
+        .status-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #001100;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .progress-bar {
+            height: 20px;
+            background: #003300;
+            margin-top: 10px;
+            position: relative;
+        }
+        
+        .progress {
+            height: 100%;
+            width: 0%;
+            background: #00ff00;
+            transition: width 0.5s;
+        }
+        
+        .info-panel {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 17, 0, 0.9);
+            padding: 15px;
+            border: 1px solid #00ff00;
+            min-width: 300px;
+        }
+
+        .warning {
+            color: #ff0000;
+            font-weight: bold;
+        }
+
+        .file-transfer {
+            background: #001100;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #00ff00;
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .blink {
+            animation: blink 1s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="info-panel">
+            <div>Target System: <span id="target-system">UNKNOWN</span></div>
+            <div>Location: <span id="location">SCANNING...</span></div>
+            <div>Status: <span id="status" class="blink">INFILTRATING</span></div>
+            <div id="data-transfer"></div>
+        </div>
+        
+        <div class="terminal">
+            <div id="console-output"></div>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+        
+        <div class="status-bar">
+            <div>Advanced System Infiltration Module v3.2.7</div>
+            <div id="timestamp"></div>
+        </div>
+    </div>
+
+    <script>
+        const systemMessages = [
+            "▶ Initializing breach protocol...",
+            "▶ Bypassing system security...",
+            "▶ Accessing root directory...",
+            "▶ Disabling security protocols...",
+            "▶ Scanning for sensitive data...",
+            "▶ Injecting payload...",
+            "▶ Establishing persistent connection...",
+            "▶ Accessing location services...",
+            "▶ Retrieving user credentials...",
+            "▶ Downloading system files...",
+            "▶ Erasing security logs...",
+            "▶ Implementing backdoor access..."
+        ];
+
+        const sensitiveFiles = [
+            "passwords.txt",
+            "banking_info.dat",
+            "personal_photos.zip",
+            "documents.rar",
+            "browser_history.db",
+            "email_backup.mbox",
+            "contacts.vcf",
+            "messages.backup"
+        ];
+
+        let messageIndex = 0;
+        const output = document.getElementById('console-output');
+        const progress = document.getElementById('progress');
+        const status = document.getElementById('status');
+        const dataTransfer = document.getElementById('data-transfer');
+
+        function getRandomLocation() {
+            const locations = [
+                "New York, US",
+                "London, UK",
+                "Tokyo, JP",
+                "Sydney, AU",
+                "Paris, FR"
+            ];
+            return locations[Math.floor(Math.random() * locations.length)];
+        }
+
+        function formatBytes(bytes) {
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            if (bytes === 0) return '0 Byte';
+            const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+            return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+        }
+
+        async function simulateFileTransfer(filename) {
+            const size = Math.random() * 1024 * 1024 * 500; // Random size up to 500MB
+            dataTransfer.innerHTML = `
+                <div class="file-transfer">
+                    Downloading: ${filename}
+                    <br>Size: ${formatBytes(size)}
+                    <br>Status: Transferring...
+                </div>
+            `;
+            await new Promise(resolve => setTimeout(resolve, 2000));
+        }
+
+        async function typeMessage(message) {
+            return new Promise(resolve => {
+                let i = 0;
+                const interval = setInterval(() => {
+                    if (i < message.length) {
+                        output.textContent += message.charAt(i);
+                        i++;
+                    } else {
+                        clearInterval(interval);
+                        output.textContent += '\n';
+                        resolve();
+                    }
+                }, 30);
+            });
+        }
+
+        async function runBreach() {
+            document.getElementById('target-system').textContent = 
+                `${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`;
+            
+            for (let i = 0; i < systemMessages.length; i++) {
+                await typeMessage(systemMessages[i]);
+                progress.style.width = `${(i + 1) * (100 / systemMessages.length)}%`;
+                
+                if (i === 4) {
+                    await typeMessage("\n[!] SENSITIVE FILES DETECTED:");
+                    for (const file of sensitiveFiles) {
+                        await simulateFileTransfer(file);
+                        await typeMessage(`✓ ${file} acquired`);
+                    }
+                }
+
+                if (i === 7) {
+                    document.getElementById('location').textContent = getRandomLocation();
+                    await typeMessage("\n[!] LOCATION DATA ACQUIRED");
+                }
+                
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+            
+            status.textContent = "SYSTEM COMPROMISED";
+            status.style.color = "#ff0000";
+            await typeMessage("\n[✓] System breach complete. Full access granted.");
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setInterval(() => {
+                document.getElementById('timestamp').textContent = new Date().toISOString();
+            }, 1000);
+            runBreach();
+        });
+    </script>
+</body>
+</html>
